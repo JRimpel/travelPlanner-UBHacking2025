@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Polaris</title>
+  <style>
+    :root {
+      --bg1: #03101e;
+      --bg2: #123b66;
+      --accent: #8ff0ff;
+      --radius: 18px;
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      color: #e9f9ff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .wrap {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .brand img {
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      background: white;
+      padding: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 42px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    p.lead {
+      margin: 0;
+      color: #c8ebf6;
+      max-width: 56ch;
+      font-size: clamp(14px, 2vw, 16px);
+    }
+
+    a.btn-login {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 26px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #002233;
+      background: linear-gradient(180deg, #8ff0ff, #4cc1ff);
+      box-shadow: 0 8px 24px rgba(0, 60, 120, 0.3);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    a.btn-login:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px rgba(0, 60, 120, 0.4);
+    }
+
+    a.btn-login:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #9fdff0;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main">
+      <div class="brand">
+        <img src="../assets/logo.png" alt="Polaris logo">
+        <h1>Polaris</h1>
+        <p class="lead">Your compass for planning — simple, secure, and centered around you.</p>
+      </div>
+
+      <a class="btn-login" href="/login">Log in</a>
+
+      <p class="footer-note">© 2025 Polaris</p>
+    </main>
+  </div>
+</body>
+</html>

@@ -37,7 +37,7 @@ def login():
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
-    return redirect("/")
+    return redirect("/dashboard")
 @app.route("/logout")
 def logout():
     session.clear()
@@ -54,6 +54,13 @@ def logout():
     )
 @app.route("/")
 def home():
-    return render_template("home.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4))
+    return render_template("title.html")
+    
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html") 
+
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=env.get("PORT", 3000))
