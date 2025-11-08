@@ -8,7 +8,11 @@ from flask import Flask, redirect, render_template, session, url_for
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
-    oauth = OAuth(app)
+        
+app = Flask(__name__)
+app.secret_key = env.get("APP_SECRET_KEY")
+
+oauth = OAuth(app)
 
 oauth.register(
     "auth0",
@@ -21,6 +25,7 @@ oauth.register(
 )
 @app.route("/login")
 def login():
+    print("Redirect URI:", url_for("callback", _external=True))  # 👈 print it
     return oauth.auth0.authorize_redirect(
         redirect_uri=url_for("callback", _external=True)
     )
