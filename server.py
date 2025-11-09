@@ -3,29 +3,17 @@ from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
-from openai import OpenAI
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
+import requests
 
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
-client = OpenAI(api_key=env.get("OPENAI_API_KEY"))
-resp = client.responses.create(
-  model="gpt-5",  # pick your model
-  tools=[{"type": "web_search"}],  # enable web search
-  input=[{
-    "role": "user",
-    "content": (
-      "Find a direct image URL (jpg/png/webp) of {dest} from public pages. "
-      "Return an absolute URL only; no thumbnails; no query strings if a clean canonical exists."
-    )
-  }]
-)
-
-        
+       
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
+UNSPLASH_ACCESS_KEY = "pMgW6_xKiPodZXmzU2ZYwGTaL1rQf3vbalMdA21tMAI"
 
 oauth = OAuth(app)
 
@@ -50,7 +38,7 @@ def callback():
     return redirect("/dashboard")
 @app.route("/logout")
 def logout():
-    session.clear()
+    session.pop("user", None)
     return redirect(
         "https://" + env.get("AUTH0_DOMAIN")
         + "/v2/logout?"
@@ -69,8 +57,40 @@ def home():
     
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html") 
+    session_dict = dict(session)
+    return render_template("dashboard.html", session = session_dict) 
 
+
+@app.route("/img-url", methods = ["POST"])
+def imgGen():
+    data = request.get_json()
+    destination = data.get("destination")
+    response = requests.get(
+        "https://api.unsplash.com/photos/random",
+        params = {
+          "query": destination,
+          "client_id": UNSPLASH_ACCESS_KEY,
+          "orientation": "landscape"      
+   })
+    data = response.json()
+    url = data.get("urls").get("regular")
+    return jsonify({"image":url})
+
+@app.route("/update-session", methods = ["POST"])
+def updateSession():
+    data = request.get_json()
+    print(data)
+    if "trips" not in session:
+        session["trips"] = {}
+    session["trips"].update({data["destination"]: data["date"]})
+    session.modified = True
+    print(session)
+    return jsonify({"message": "Session updated", "session": dict(session)})
+@app.route("/clear-trips", methods=["POST"])
+def clearTrips():
+    session.pop("trips", None) 
+    session.modified = True
+    return jsonify({"status": "cleared"})
 
 
 if __name__ == "__main__":
