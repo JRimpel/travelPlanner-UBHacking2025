@@ -17,12 +17,11 @@ resp = client.responses.create(
   input=[{
     "role": "user",
     "content": (
-      "Find a direct image URL (jpg/png/webp) of st. malo from public pages. "
+      "Find a direct image URL (jpg/png/webp) of {dest} from public pages. "
       "Return an absolute URL only; no thumbnails; no query strings if a clean canonical exists."
     )
   }]
 )
-print(resp.output_text)
 
         
 app = Flask(__name__)
