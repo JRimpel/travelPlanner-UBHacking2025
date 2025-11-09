@@ -4,16 +4,16 @@ from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, redirect, render_template, session, url_for, request, jsonify
-from openai import OpenAI
+import requests
 
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
-client = OpenAI(api_key=env.get("OPENAI_API_KEY"))
        
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
+UNSPLASH_ACCESS_KEY = "pMgW6_xKiPodZXmzU2ZYwGTaL1rQf3vbalMdA21tMAI"
 
 oauth = OAuth(app)
 
@@ -64,23 +64,16 @@ def dashboard():
 def imgGen():
     data = request.get_json()
     destination = data.get("destination")
-    print("Destination:", destination)
-    print(client)
-    resp = client.responses.create(
-        model="gpt-5",  # pick your model
-        tools=[{"type": "web_search"}],  # enable web search
-        input=[{
-            "role": "user",
-            "content": (
-                f"Find a direct image URL (jpg/png/webp) of {destination} from public pages. "
-                "Return an absolute URL only; no thumbnails; no query strings if a clean canonical exists."
-            )
-        }]
-    )
-    print(resp.output_text)
-    output = jsonify({"image":resp.output_text})
-    print(output)
-    return output
+    response = requests.get(
+        "https://api.unsplash.com/photos/random",
+        params = {
+          "query": destination,
+          "client_id": UNSPLASH_ACCESS_KEY,
+          "orientation": "landscape"      
+   })
+    data = response.json()
+    url = data.get("urls").get("regular")
+    return jsonify({"image":url})
 
 
 
