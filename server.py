@@ -10,16 +10,11 @@ from google import genai
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
-print(env.get("AUTH0_CLIENT_ID"))
-print(env.get("AUTH0_DOMAIN"))
-print(env.get("APP_SECRET_KEY"))
 client = genai.Client(api_key=env.get("GEMINI_API_KEY"))
 response = client.models.generate_content(
     model="gemini-2.5-flash", contents="Explain how AI works in a few words"
 )
-print(response.text)
-
-        
+      
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
 
