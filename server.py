@@ -38,7 +38,7 @@ def callback():
     return redirect("/dashboard")
 @app.route("/logout")
 def logout():
-    session.clear()
+    session.pop("user", None)
     return redirect(
         "https://" + env.get("AUTH0_DOMAIN")
         + "/v2/logout?"
@@ -57,7 +57,8 @@ def home():
     
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html") 
+    session_dict = dict(session)
+    return render_template("dashboard.html", session = session_dict) 
 
 
 @app.route("/img-url", methods = ["POST"])
@@ -74,6 +75,18 @@ def imgGen():
     data = response.json()
     url = data.get("urls").get("regular")
     return jsonify({"image":url})
+
+@app.route("/update-session", methods = ["POST"])
+def updateSession():
+    data = request.get_json()
+    print(data)
+    if "trips" not in session:
+        session["trips"] = {}
+    session["trips"].update({data["destination"]: data["date"]})
+    session.modified = True
+    print(session)
+    return jsonify({"message": "Session updated", "session": dict(session)})
+
 
 
 
