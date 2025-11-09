@@ -50,7 +50,7 @@ class trip:
         def calculateTotalCost(self):
             total = 0
             for hotel in self.hotels.hotelList:
-                total += hotel.cost
+               total += hotel.cost
             for activity in self.activities.activityList:
                 total += activity.cost
             for transport in self.transportations.transportList:
