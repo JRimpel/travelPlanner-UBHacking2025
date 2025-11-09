@@ -147,6 +147,7 @@
     <button onclick = "addTrip()">
        Add a Trip!
     </button>
+    <button onclick="clearTrips()">Clear All Trips</button>
     <ul class = "travel-list">
     </ul>
   </div>
@@ -195,6 +196,18 @@
         body: JSON.stringify({destination: destination, date: date})
       })
     }
+    async function clearTrips() {
+      const list = document.querySelector('.travel-list');
+      list.innerHTML = "";
+
+      await fetch("/clear-trips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      console.log("All trips cleared from session and UI.");
+    }
+
     let session = {{session|tojson}};
     console.log(typeof session);
     console.log(session);

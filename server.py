@@ -86,8 +86,11 @@ def updateSession():
     session.modified = True
     print(session)
     return jsonify({"message": "Session updated", "session": dict(session)})
-
-
+@app.route("/clear-trips", methods=["POST"])
+def clearTrips():
+    session.pop("trips", None) 
+    session.modified = True
+    return jsonify({"status": "cleared"})
 
 
 if __name__ == "__main__":
