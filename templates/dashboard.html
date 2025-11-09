@@ -174,17 +174,24 @@
       window.location.href = "/logout";
     }
 
-    function addTrip(){
+    async function addTrip(){
       let destination = prompt("Where would you like to go?");
       let date = prompt("When?");
+      const response = await fetch("/img-url", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({destination:destination})
+      });
+      const data = await response.json();
+      console.log(data);
+      
       const list = document.querySelector('.travel-list');
       li = document.createElement('li');
-      console.log(li);
       li.classList.add("travel-list-items");
       li.innerHTML = `
         <div class = "destination-box">
             <div class = "destination-img-box">
-              <img class = "destination-img" src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1200px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg">
+              <img class = "destination-img" src = "${data.image}">
             </div>
             <div class = "destination-info">
               <p>${destination} ${date}</p>

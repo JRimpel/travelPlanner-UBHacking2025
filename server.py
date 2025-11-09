@@ -3,7 +3,7 @@ from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
 from openai import OpenAI
 
 
@@ -11,20 +11,7 @@ ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 client = OpenAI(api_key=env.get("OPENAI_API_KEY"))
-resp = client.responses.create(
-  model="gpt-5",  # pick your model
-  tools=[{"type": "web_search"}],  # enable web search
-  input=[{
-    "role": "user",
-    "content": (
-      "Find a direct image URL (jpg/png/webp) of st. malo from public pages. "
-      "Return an absolute URL only; no thumbnails; no query strings if a clean canonical exists."
-    )
-  }]
-)
-print(resp.output_text)
-
-        
+       
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
 
@@ -71,6 +58,29 @@ def home():
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html") 
+
+
+@app.route("/img-url", methods = ["POST"])
+def imgGen():
+    data = request.get_json()
+    destination = data.get("destination")
+    print("Destination:", destination)
+    print(client)
+    resp = client.responses.create(
+        model="gpt-5",  # pick your model
+        tools=[{"type": "web_search"}],  # enable web search
+        input=[{
+            "role": "user",
+            "content": (
+                f"Find a direct image URL (jpg/png/webp) of {destination} from public pages. "
+                "Return an absolute URL only; no thumbnails; no query strings if a clean canonical exists."
+            )
+        }]
+    )
+    print(resp.output_text)
+    output = jsonify({"image":resp.output_text})
+    print(output)
+    return output
 
 
 
