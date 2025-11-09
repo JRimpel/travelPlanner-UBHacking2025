@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel Dashboard</title>
   <style>
+    html{
+      min-height: 100%;
+    }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
+      display:flex;
+      min-height: 100vh;
+      height: 100%;
     }
 
     /* Sidebar styling */
@@ -92,7 +95,8 @@
 
     .travel-list{
       list-style-type:none;
-
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
     }
     .destination-box{
       display: table;
@@ -100,6 +104,7 @@
       height: 200px;
       padding: 10px;
       background: grey;
+      margin: 10px;
     }
     .destination-img{
       width: 100%;
