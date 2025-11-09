@@ -11,7 +11,18 @@ ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 client = OpenAI(api_key=env.get("OPENAI_API_KEY"))
-
+resp = client.responses.create(
+  model="gpt-5",  # pick your model
+  tools=[{"type": "web_search"}],  # enable web search
+  input=[{
+    "role": "user",
+    "content": (
+      "Find a direct image URL (jpg/png/webp) of st. malo from public pages. "
+      "Return an absolute URL only; no thumbnails; no query strings if a clean canonical exists."
+    )
+  }]
+)
+print(resp.output_text)
 
         
 app = Flask(__name__)
@@ -28,7 +39,6 @@ oauth.register(
     },
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 )
-
 @app.route("/login")
 def login():
     return oauth.auth0.authorize_redirect(
@@ -38,12 +48,10 @@ def login():
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
-    session.permanent = True
     return redirect("/dashboard")
 @app.route("/logout")
 def logout():
-    session.pop("user")
-    print(session)
+    session.clear()
     return redirect(
         "https://" + env.get("AUTH0_DOMAIN")
         + "/v2/logout?"
@@ -55,13 +63,14 @@ def logout():
             quote_via=quote_plus,
         )
     )
+
 @app.route("/")
 def home():
     return render_template("title.html")
     
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html", session = session) 
+    return render_template("dashboard.html") 
 
 
 
