@@ -10,9 +10,6 @@ from openai import OpenAI
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
-print(env.get("AUTH0_CLIENT_ID"))
-print(env.get("AUTH0_DOMAIN"))
-print(env.get("APP_SECRET_KEY"))
 client = OpenAI(api_key=env.get("OPENAI_API_KEY"))
 
 
@@ -31,6 +28,7 @@ oauth.register(
     },
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 )
+
 @app.route("/login")
 def login():
     return oauth.auth0.authorize_redirect(
@@ -40,10 +38,12 @@ def login():
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
+    session.permanent = True
     return redirect("/dashboard")
 @app.route("/logout")
 def logout():
-    session.clear()
+    session.pop("user")
+    print(session)
     return redirect(
         "https://" + env.get("AUTH0_DOMAIN")
         + "/v2/logout?"
@@ -61,7 +61,7 @@ def home():
     
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html") 
+    return render_template("dashboard.html", session = session) 
 
 
 

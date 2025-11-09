@@ -138,8 +138,10 @@
 
   <div class="main-content">
     <button class = "toggle2" id = "toggle2" onclick = "toggleSidebar()">☰</button> 
-    <h1>Welcome to Your Travel Dashboard</h1>
-    <p>Select an option from the sidebar to get started.</p>
+    <h1>Travel DashBoard</h1>
+    <button onclick = "addTrip()">
+       Add a Trip!
+    </button>
     <ul class = "travel-list">
       <li class = "travel-list-items">
         <div class = "destination-box">
@@ -156,6 +158,8 @@
   </div>
 
   <script>
+    let session = "{{session}}";
+    let userData = session["userData"];
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('collapsed');
       document.getElementById('toggle2').classList.toggle('invisible');
@@ -163,6 +167,26 @@
 
     function logout() {
       window.location.href = "/logout";
+    }
+
+    function addTrip(){
+      let destination = prompt("Where would you like to go?");
+      let date = prompt("When?");
+      const list = document.querySelector('.travel-list');
+      li = document.createElement('li');
+      console.log(li);
+      li.classList.add("travel-list-items");
+      li.innerHTML = `
+        <div class = "destination-box">
+            <div class = "destination-img-box">
+              <img class = "destination-img" src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg/1200px-Trevi_Fountain%2C_Rome%2C_Italy_2_-_May_2007.jpg">
+            </div>
+            <div class = "destination-info">
+              <p>${destination} ${date}</p>
+          </div> 
+        </div> 
+      `;
+      list.appendChild(li);
     }
   </script>
 </body>
